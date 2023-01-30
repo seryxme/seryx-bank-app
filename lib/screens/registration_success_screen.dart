@@ -31,35 +31,40 @@ class SuccessScreen extends StatelessWidget {
         ],
         backgroundColor: Colors.purple[700],
       ),
-      body: Column(
-        children: [
-          const Center(
-            child: Text(
-              'Your account registration is successful. Please log in.',
-              style: TextStyle(
-                fontSize: 20,
-                fontFamily: 'Rubik',
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          ElevatedButton(
-              onPressed: () => nav.navigateToLogin(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple[700],
-                fixedSize: const Size(300, 40),
-              ),
-              child: const Text(
-                'Login',
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text(
+                'Your account registration is successful. Please log in.',
                 style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'Rubik',
-                    fontWeight: FontWeight.bold
+                  fontSize: 20,
+                  fontFamily: 'Rubik',
+                  fontWeight: FontWeight.bold,
+                  color: Colors.purple,
                 ),
-              )
+                textAlign: TextAlign.center,
+              ),
+              ElevatedButton(
+                  onPressed: () => nav.navigateToLogin(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple[700],
+                    fixedSize: const Size(300, 40),
+                  ),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Rubik',
+                        fontWeight: FontWeight.bold
+                    ),
+                  )
+              ),
+            ],
           ),
-        ],
+        ),
       ),
 
 
