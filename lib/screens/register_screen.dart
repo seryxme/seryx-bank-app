@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:seryx_bank/models/customer.dart';
+import 'package:seryx_bank/services/customer_service.dart';
 
 import '../controllers/navigation_controller.dart';
 
@@ -62,6 +63,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   Customer customer = Customer();
   final nav = Get.put(NavigationController());
+  final srv = CustomerService();
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +131,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             hintText: 'e.g. tunde.seriki@provider.com',
             isEmail: true,
             validator: (entry) {
-              if (!entry!.isEmail) {
+              if (entry!.isEmpty) {
                 return 'Please, enter a valid email address.';
               }
               return null;
@@ -149,7 +151,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               return null;
             },
             onSaved: (entry) {
-              customer.email = entry!;
+              customer.address = entry!;
             },
           ),
           RegistrationFormField(
@@ -184,9 +186,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
+                      await srv.registerCustomer(customer);
+                      Customer newCustomer = srv.cust;
                       nav.navigateToSuccess(customer);
                     }
                   },

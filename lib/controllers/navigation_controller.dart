@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:seryx_bank/models/customer.dart';
+import 'package:seryx_bank/screens/customer_account_screen.dart';
 import 'package:seryx_bank/screens/home_screen.dart';
 import 'package:seryx_bank/screens/login_screen.dart';
 import 'package:seryx_bank/screens/register_screen.dart';
@@ -16,7 +17,11 @@ class NavigationController extends GetxController {
   }
 
   navigateToSuccess(Customer customer){
-    Get.to(() => SuccessScreen(customer: customer,));
+    Get.off(() => SuccessScreen(customer: customer,));
+  }
+
+  navigateToCustomerAccount(Customer? customer){
+    Get.to(() => CustomerAccountScreen(customer: customer,));
   }
 
   navigateToLogin() {

@@ -1,4 +1,6 @@
 class Account {
-  int accountId = 0;
+  int? accountId;
   String? accountNum;
+
+
 }

@@ -5,10 +5,10 @@ import 'package:seryx_bank/models/customer.dart';
 import '../controllers/navigation_controller.dart';
 
 class SuccessScreen extends StatelessWidget {
-  Customer customer;
+  final Customer customer;
   final nav = Get.put(NavigationController());
 
-  SuccessScreen({required this.customer});
+  SuccessScreen({super.key, required this.customer});
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +37,8 @@ class SuccessScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Text(
-                'Your account registration is successful. Please log in.',
+              Text(
+                '${customer.firstName}, your account registration is successful. Please log in.',
                 style: TextStyle(
                   fontSize: 20,
                   fontFamily: 'Rubik',
