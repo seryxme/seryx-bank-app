@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:seryx_bank/dtos/requests/register_customer_request.dart';
 import 'package:seryx_bank/models/customer.dart';
 
 import '../controllers/navigation_controller.dart';
+import '../dtos/responses/register_customer_response.dart';
 
 class SuccessScreen extends StatelessWidget {
-  final Customer customer;
+  final RegisterCustomerResponse response;
   final nav = Get.put(NavigationController());
 
-  SuccessScreen({super.key, required this.customer});
+  SuccessScreen({super.key, required this.response});
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +40,8 @@ class SuccessScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                '${customer.firstName}, your account registration is successful. Please log in.',
-                style: TextStyle(
+                '${response.firstName} ${response.lastName}, ${response.message}',
+                style: const TextStyle(
                   fontSize: 20,
                   fontFamily: 'Rubik',
                   fontWeight: FontWeight.bold,

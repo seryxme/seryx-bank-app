@@ -1,10 +1,14 @@
 import 'dart:math';
 
+import 'package:seryx_bank/dtos/requests/register_customer_request.dart';
 import 'package:seryx_bank/models/account.dart';
 import 'package:seryx_bank/models/customer.dart';
 import 'package:seryx_bank/services/account_service.dart';
 import 'package:seryx_bank/services/db_service.dart';
 
+import '../dtos/requests/login_customer_request.dart';
+import '../dtos/responses/register_customer_response.dart';
+import '../utils/mapper.dart';
 import 'auth.dart';
 
 class CustomerService {
@@ -12,26 +16,21 @@ class CustomerService {
   final _accountService = AccountService();
   final _auth = AuthenticationService();
   final Random _randomAccNum = Random.secure();
-  Customer cust = Customer();
-  Customer? loggedInCustomer = Customer();
-  final Map<String, Customer> _customers = {};
+  final Customer? _loggedInCustomer = Customer();
 
   String? email;
   String? password;
 
-  registerCustomer(Customer customer) async {
-    await _auth.registerCustomer(customer);
-    customer.customerId = _auth.newUser?.uid;
+  registerCustomer(RegisterCustomerRequest request) async {
+    await _auth.registerCustomer(request);
 
-    await _db.customersCollection.doc(customer.customerId)
-    .set(
-      {
-        'firstName': customer.firstName,
-        'lastName': customer.lastName,
-        'phoneNumber': customer.phoneNumber,
-        'address': customer.address,
-        'email': customer.email,
-      }
+    await _db.customersCollection.doc(_auth.newUser?.uid)
+    .set(Mapper.mapRequestToCustomerDoc(request));
+
+    return RegisterCustomerResponse(
+      firstName: request.firstName,
+      lastName: request.lastName,
+      message: 'your registration was successful. Please log in.'
     );
   }
 
@@ -46,11 +45,7 @@ class CustomerService {
       }
     }
     );
-    // loggedInCustomer?.customerId = user[uid];
-    // loggedInCustomer?.email = user[email];
-    // loggedInCustomer?.firstName = user[firstName];
-
-    return null;
+    return Mapper.mapCustomerDocToCustomer(user);
   }
 
   addAccountToCustomer(Customer customer) {
@@ -61,21 +56,18 @@ class CustomerService {
     customer.account = newAccount;
   }
 
-  loginCustomer() async {
+  loginCustomer(LoginCustomerRequest request) async {
     try {
-      await _auth.loginCustomer(email!, password!);
+      await _auth.loginCustomer(request);
       if (_auth.loggedInUser != null) {
-        loggedInCustomer?.email = _auth.loggedInUser?.email;
-        print(loggedInCustomer?.email);
+        return await getCustomerById(_auth.loggedInUser?.uid);
       }
       else {
-        loggedInCustomer = null;
-        print("Customer doesn't exist.");
+        // print("Customer doesn't exist.");
+        return null;
       }
     } catch (e) {
       print(e);
     }
-
-    // print(loggedInCustomer?.firstName);
   }
 }

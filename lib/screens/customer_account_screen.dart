@@ -11,10 +11,39 @@ class CustomerAccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            'Welcome ${customer?.firstName} ${customer?.lastName}'
+        leading: const Icon(Icons.menu_rounded),
+        actions: const [
+        Text(
+        'Main Account',
+      ),
+          Icon(Icons.person)
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              const Text(
+                'Dashboard',
+                style: TextStyle(
+                  fontFamily: 'Josefin Sans',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 30,
+                ),),
+              SizedBox(height: 30.0,),
+              Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  color: Colors.blueGrey,
+                ),
+                  child: Text(
+                      'Welcome ${customer?.firstName},'
+                  ),
+              ),
+            ],
+          ),
         ),
-        centerTitle: true,
       ),
     );
   }

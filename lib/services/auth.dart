@@ -1,28 +1,20 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seryx_bank/dtos/requests/register_customer_request.dart';
 import 'package:seryx_bank/models/customer.dart';
+
+import '../dtos/requests/login_customer_request.dart';
 
 class AuthenticationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? newUser;
   User? loggedInUser;
 
-  // Customer mapUser(Customer customer) {
-  //   if (newUser != null) {
-  //     customer.customerId = newUser?.uid;
-  //     customer.email = newUser?.email;
-  //   }
-  //   return customer;
-  // }
-
-
-
-
-  registerCustomer(Customer customer) async {
+  registerCustomer(RegisterCustomerRequest request) async {
     try {
       var res = await _auth.createUserWithEmailAndPassword(
-          email: customer.email!,
-          password: customer.password
+          email: request.email,
+          password: request.password
       );
       newUser = res.user;
     } catch(e) {
@@ -30,17 +22,13 @@ class AuthenticationService {
     }
   }
 
-  // User? get user {
-  //   _auth.authStateChanges().first.then((value) => loggedInUser = value);
-  //   return loggedInUser;
-  // }
-
-  loginCustomer(String email, String password) async {
+  loginCustomer(LoginCustomerRequest request) async {
     try {
       var res = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+          email: request.email!,
+          password: request.password!
+      );
       loggedInUser = res.user;
-      // print(loggedInUser?.email);
     } catch(e) {
       print(e.toString());
     }

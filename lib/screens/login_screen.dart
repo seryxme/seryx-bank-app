@@ -4,7 +4,10 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:seryx_bank/screens/home_screen.dart';
 import 'package:seryx_bank/services/customer_service.dart';
 
+import '../controllers/customer_controller.dart';
 import '../controllers/navigation_controller.dart';
+import '../dtos/requests/login_customer_request.dart';
+import '../models/customer.dart';
 import 'customer_account_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,7 +20,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final nav = Get.put(NavigationController());
   final _formKey = GlobalKey<FormState>();
-  var srv = CustomerService();
+  final ctr = Get.put(CustomerController());
+  LoginCustomerRequest request = LoginCustomerRequest();
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     onChanged: (entry) {
                       setState(() {
-                        srv.email = entry;
+                        request.email = entry;
                       });
                     },
                     keyboardType: TextInputType.emailAddress,
@@ -131,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     onChanged: (entry) {
                       setState(() {
-                        srv.password = entry;
+                        request.password = entry;
                       });
                     },
                     obscureText: true,
@@ -144,8 +148,8 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextButton(
                     onPressed: () {
-                      // srv.emailController.clear();
-                      // srv.passwordController.clear();
+                      request.email = '';
+                      request.password = '';
                     },
                     child: const Text(
                       'Clear',
@@ -161,9 +165,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-                        await srv.loginCustomer();
-                        if (srv.loggedInCustomer != null) {
-                          nav.navigateToCustomerAccount(srv.loggedInCustomer);
+                        Customer? loggedInCustomer = await ctr.loginCustomer(request);
+                        if (loggedInCustomer != null) {
+                          nav.navigateToCustomerAccount(loggedInCustomer);
                         }
                         else {
                           nav.navigateToHome();

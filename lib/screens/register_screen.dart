@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:seryx_bank/dtos/requests/register_customer_request.dart';
 import 'package:seryx_bank/models/customer.dart';
 import 'package:seryx_bank/services/customer_service.dart';
 
+import '../controllers/customer_controller.dart';
 import '../controllers/navigation_controller.dart';
+import '../dtos/responses/register_customer_response.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -61,9 +64,9 @@ class RegistrationForm extends StatefulWidget {
 class _RegistrationFormState extends State<RegistrationForm> {
 
   final _formKey = GlobalKey<FormState>();
-  Customer customer = Customer();
+  RegisterCustomerRequest request = RegisterCustomerRequest();
   final nav = Get.put(NavigationController());
-  final srv = CustomerService();
+  final ctr = Get.put(CustomerController());
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +92,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       return null;
                     },
                     onSaved: (entry) {
-                      customer.firstName = entry!;
+                      request.firstName = entry!;
                     },
                   ),
                 ),
@@ -106,7 +109,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       return null;
                     },
                     onSaved: (entry) {
-                      customer.lastName = entry!;
+                      request.lastName = entry!;
                     },
                   ),
                 ),
@@ -123,7 +126,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               return null;
             },
             onSaved: (entry) {
-              customer.phoneNumber = entry!;
+              request.phoneNumber = entry!;
             },
           ),
           RegistrationFormField(
@@ -137,7 +140,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               return null;
             },
             onSaved: (entry) {
-              customer.email = entry!;
+              request.email = entry!;
             },
           ),
           RegistrationFormField(
@@ -151,7 +154,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               return null;
             },
             onSaved: (entry) {
-              customer.address = entry!;
+              request.address = entry!;
             },
           ),
           RegistrationFormField(
@@ -166,7 +169,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               return null;
             },
             onSaved: (entry) {
-              customer.password = entry!;
+              request.password = entry!;
             },
           ),
           RegistrationFormField(
@@ -174,7 +177,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             hintText: 'Enter password again',
             isPassword: true,
             validator: (entry) {
-              if (entry!.isEmpty || entry != customer.password) {
+              if (entry!.isEmpty || entry != request.password) {
                 return 'Password mismatch.';
               }
               return null;
@@ -189,9 +192,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      await srv.registerCustomer(customer);
-                      Customer newCustomer = srv.cust;
-                      nav.navigateToSuccess(customer);
+                      RegisterCustomerResponse response = await ctr.registerCustomer(request);
+                      nav.navigateToSuccess(response);
                     }
                   },
                   style: ElevatedButton.styleFrom(

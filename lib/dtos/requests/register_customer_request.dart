@@ -7,5 +7,4 @@ class RegisterCustomerRequest {
   String address = '';
   String email = '';
   String password = '';
-  Account? account;
 }
