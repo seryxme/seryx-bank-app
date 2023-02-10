@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
+
 class LoginCustomerRequest {
-  String? email;
-  String? password;
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
 }

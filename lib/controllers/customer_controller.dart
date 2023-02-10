@@ -1,12 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:seryx_bank/dtos/requests/register_customer_request.dart';
 import 'package:seryx_bank/services/customer_service.dart';
 
 import '../dtos/requests/login_customer_request.dart';
 
-final CustomerService srv = CustomerService();
-
 class CustomerController extends GetxController {
+  final CustomerService srv = CustomerService();
+  var accountController = TextEditingController();
+
   registerCustomer(RegisterCustomerRequest request) async {
     return await srv.registerCustomer(request);
   }

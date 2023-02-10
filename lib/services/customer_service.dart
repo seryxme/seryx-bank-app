@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:seryx_bank/dtos/requests/register_customer_request.dart';
 import 'package:seryx_bank/models/account.dart';
 import 'package:seryx_bank/models/customer.dart';
@@ -15,11 +16,10 @@ class CustomerService {
   final _db = DatabaseService();
   final _accountService = AccountService();
   final _auth = AuthenticationService();
-  final Random _randomAccNum = Random.secure();
-  final Customer? _loggedInCustomer = Customer();
 
   String? email;
   String? password;
+  String? error;
 
   registerCustomer(RegisterCustomerRequest request) async {
     await _auth.registerCustomer(request);
@@ -35,7 +35,6 @@ class CustomerService {
   }
 
   getCustomerById(String? uid) async {
-    print(_db.customersCollection.count());
     var user = <String, dynamic>{};
     await _db.customersCollection.get().then((e) {
       for (var doc in e.docs) {
@@ -48,26 +47,50 @@ class CustomerService {
     return Mapper.mapCustomerDocToCustomer(user);
   }
 
-  addAccountToCustomer(Customer customer) {
-    int accountId = _randomAccNum.nextInt(3999999999);
-    Account newAccount = Account();
-    newAccount.accountId = accountId;
-    newAccount.accountNum = accountId.toString().padLeft(10, '0');
-    customer.account = newAccount;
+  addAccountToCustomer(Customer customer) async {
+    await _accountService.createAccount();
+    customer.account = _accountService.createdAccount;
   }
 
   loginCustomer(LoginCustomerRequest request) async {
     try {
       await _auth.loginCustomer(request);
       if (_auth.loggedInUser != null) {
-        return await getCustomerById(_auth.loggedInUser?.uid);
+        Customer loggedInCustomer = await getCustomerById(_auth.loggedInUser?.uid);
+        if (loggedInCustomer.account.accountNum == null) {
+          await addAccountToCustomer(loggedInCustomer);
+          await updateCustomerAccountDetails(loggedInCustomer, _auth.loggedInUser?.uid);
+        }
+        return loggedInCustomer;
       }
       else {
-        // print("Customer doesn't exist.");
+        error = "Customer doesn't exist.";
         return null;
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  updateCustomerAccountDetails(Customer customer, String? uid) async {
+    var accountData = {
+      'accountNum': customer.account.accountNum
+    };
+    await _db.customersCollection.doc(uid)
+        .set(accountData, SetOptions(merge: true));
+  }
+
+  void makePayment(String sender, String receiver, double amount) async {
+    await _accountService.getAccountDetails(sender);
+    Account senderAccount = _accountService.foundAccount;
+
+    await _accountService.getAccountDetails(receiver);
+    Account receiverAccount = _accountService.foundAccount;
+
+    var payment = _accountService.addPaidTransaction(senderAccount, amount);
+    var receipt = _accountService.addReceivedTransaction(receiverAccount, amount);
+
+    await _accountService.addTransactionToAccount(sender, payment);
+    await _accountService.addTransactionToAccount(receiver, receipt);
   }
 }

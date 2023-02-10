@@ -7,7 +7,6 @@ class Customer {
   String phoneNumber = '';
   String address = '';
   String? email;
-  String password = '';
-  Account? account;
-
+  Account account = Account();
+  String? transactionPin;
 }

@@ -25,11 +25,12 @@ class AuthenticationService {
   loginCustomer(LoginCustomerRequest request) async {
     try {
       var res = await _auth.signInWithEmailAndPassword(
-          email: request.email!,
-          password: request.password!
+          email: request.emailController.text,
+          password: request.passwordController.text
       );
       loggedInUser = res.user;
     } catch(e) {
+      loggedInUser = null;
       print(e.toString());
     }
   }

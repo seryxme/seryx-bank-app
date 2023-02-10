@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:seryx_bank/screens/home_screen.dart';
-import 'package:seryx_bank/services/customer_service.dart';
 
 import '../controllers/customer_controller.dart';
 import '../controllers/navigation_controller.dart';
 import '../dtos/requests/login_customer_request.dart';
 import '../models/customer.dart';
-import 'customer_account_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -104,9 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                     onChanged: (entry) {
-                      setState(() {
-                        request.email = entry;
-                      });
+                        request.emailController.text = entry;
                     },
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -134,9 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                     onChanged: (entry) {
-                      setState(() {
-                        request.password = entry;
-                      });
+                      request.passwordController.text = entry;
                     },
                     obscureText: true,
                   ),
@@ -148,8 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextButton(
                     onPressed: () {
-                      request.email = '';
-                      request.password = '';
+                      request.emailController.clear();
+                      request.passwordController.clear();
                     },
                     child: const Text(
                       'Clear',

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "526396790770",
+    "project_id": "seryx-bank",
+    "storage_bucket": "seryx-bank.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526396790770:android:04b60c3280b4ce12f53d6b",
+        "android_client_info": {
+          "package_name": "com.seryxbank.seryx_bank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "526396790770-nqt4tdf70e5518otetedv55qcvvt45kv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk1KrNv45MwKsv_pr5duoY_7PNrV31Q5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "526396790770-nqt4tdf70e5518otetedv55qcvvt45kv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
