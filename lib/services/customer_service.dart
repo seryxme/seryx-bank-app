@@ -44,7 +44,12 @@ class CustomerService {
       }
     }
     );
-    return Mapper.mapCustomerDocToCustomer(user);
+    Customer foundCustomer = Mapper.mapCustomerDocToCustomer(user);
+    if (foundCustomer.account.accountNum != null) {
+      await _accountService.getAccountDetails(foundCustomer.account.accountNum!);
+      foundCustomer.account = _accountService.foundAccount;
+    }
+    return foundCustomer;
   }
 
   addAccountToCustomer(Customer customer) async {
@@ -57,6 +62,7 @@ class CustomerService {
       await _auth.loginCustomer(request);
       if (_auth.loggedInUser != null) {
         Customer loggedInCustomer = await getCustomerById(_auth.loggedInUser?.uid);
+
         if (loggedInCustomer.account.accountNum == null) {
           await addAccountToCustomer(loggedInCustomer);
           await updateCustomerAccountDetails(loggedInCustomer, _auth.loggedInUser?.uid);
@@ -80,17 +86,24 @@ class CustomerService {
         .set(accountData, SetOptions(merge: true));
   }
 
-  void makePayment(String sender, String receiver, double amount) async {
+  makePayment(String sender, String receiver, double amount) async {
     await _accountService.getAccountDetails(sender);
     Account senderAccount = _accountService.foundAccount;
 
     await _accountService.getAccountDetails(receiver);
     Account receiverAccount = _accountService.foundAccount;
+    if (amount <= (senderAccount.doubleBalance)) {
+      var payment = _accountService.addPaidTransaction(senderAccount, amount);
+      var receipt = _accountService.addReceivedTransaction(receiverAccount, amount);
+      await _accountService.addTransactionToAccount(sender, payment);
+      await _accountService.addTransactionToAccount(receiver, receipt);
+      return 'Payment Successful!';
+    }
+    else {
+      error = 'Your balance is insufficient for this transfer';
+      print(error);
+      return error;
 
-    var payment = _accountService.addPaidTransaction(senderAccount, amount);
-    var receipt = _accountService.addReceivedTransaction(receiverAccount, amount);
-
-    await _accountService.addTransactionToAccount(sender, payment);
-    await _accountService.addTransactionToAccount(receiver, receipt);
+    }
   }
 }

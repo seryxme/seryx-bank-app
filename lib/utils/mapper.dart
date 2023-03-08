@@ -23,7 +23,7 @@ class Mapper {
     customer.lastName = user['lastName'];
     customer.address = user['address'];
     customer.phoneNumber = user['phoneNumber'];
-    customer.account?.accountNum = user['accountNum'];
+    customer.account.accountNum = user['accountNum'];
     return customer;
   }
 
@@ -41,18 +41,16 @@ class Mapper {
     return account;
   }
 
-  static List<Transaction> mapTransactionDocListToTransactionList(
+  static mapTransactionDocListToTransactionList(List<Transaction>? transactions,
       List<Map<String, dynamic>> transactionDocList
       ) {
-    var transactions = <Transaction>[];
     for (Map<String, dynamic> doc in transactionDocList) {
       Transaction transaction = Transaction(
           amountReceived: doc['amountReceived'],
-          amountPaid: doc['amountPaid']
+          amountPaid: doc['amountPaid'],
       );
-      transactions.add(transaction);
+      transaction.transactionDateRecord = doc['transactionTime'];
+      transactions?.add(transaction);
     }
-
-    return transactions;
   }
 }

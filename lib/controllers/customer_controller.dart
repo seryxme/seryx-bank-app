@@ -8,6 +8,7 @@ import '../dtos/requests/login_customer_request.dart';
 class CustomerController extends GetxController {
   final CustomerService srv = CustomerService();
   var accountController = TextEditingController();
+  var amountController = TextEditingController();
 
   registerCustomer(RegisterCustomerRequest request) async {
     return await srv.registerCustomer(request);
@@ -15,5 +16,9 @@ class CustomerController extends GetxController {
 
   loginCustomer(LoginCustomerRequest request) async {
     return await srv.loginCustomer(request);
+  }
+
+  makePayment(String sender, String receiver, double amount) async {
+    return await srv.makePayment(sender, receiver, amount);
   }
 }

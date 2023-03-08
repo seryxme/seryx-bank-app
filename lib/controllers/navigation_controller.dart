@@ -6,6 +6,7 @@ import 'package:seryx_bank/screens/home_screen.dart';
 import 'package:seryx_bank/screens/login_screen.dart';
 import 'package:seryx_bank/screens/register_screen.dart';
 import 'package:seryx_bank/screens/registration_success_screen.dart';
+import 'package:seryx_bank/screens/transfer_screen.dart';
 
 import '../dtos/responses/register_customer_response.dart';
 
@@ -29,5 +30,9 @@ class NavigationController extends GetxController {
 
   navigateToLogin() {
     Get.to(() => const LoginScreen());
+  }
+
+  navigateToTransfer(Customer customer) {
+    Get.to(() => TransferScreen(customer: customer));
   }
 }

@@ -10,6 +10,7 @@ class AccountService {
   final Random _randomAccNum = Random.secure();
   var createdAccount = Account();
   var foundAccount = Account();
+  var transactions = <Transaction>[];
 
   createAccount() async {
     int accountNum = _randomAccNum.nextInt(3999999999);
@@ -28,6 +29,7 @@ class AccountService {
     final transactionData = {
       'amountReceived': transaction.amountReceived,
       'amountPaid': transaction.amountPaid,
+      'transactionTime': transaction.transactionTime,
     };
     await _db.accountsCollection
         .doc(accountNum)
@@ -45,8 +47,9 @@ class AccountService {
       }
     }
     );
-    var transactions = _getTransactionDetails(accountNum);
+    await _getTransactionDetails(accountNum);
     foundAccount = Mapper.mapAccountDocToAccount(accountDoc, transactions);
+    transactions = <Transaction>[];
   }
 
   _getTransactionDetails(String accountNum) async {
@@ -58,7 +61,8 @@ class AccountService {
       }
     }
     );
-    Mapper.mapTransactionDocListToTransactionList(transactionDocList);
+    Mapper.mapTransactionDocListToTransactionList(transactions, transactionDocList);
+
   }
 
   Transaction addPaidTransaction(Account account, double amount) {

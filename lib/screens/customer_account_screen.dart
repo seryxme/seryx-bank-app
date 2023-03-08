@@ -46,7 +46,9 @@ class CustomerAccountScreen extends StatelessWidget {
             ),
             ListTile(
               title: const Text('Send funds'),
-              onTap: () {},
+              onTap: () {
+                nav.navigateToTransfer(customer!);
+              },
             ),
             ListTile(
               title: const Text('Transaction History'),
